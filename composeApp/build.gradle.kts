@@ -1,11 +1,29 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+// composeApp/build.gradle.kts — ลบ plugin javafxplugin และบล็อก javafx { } ออก
+// แล้วใช้แทนดังนี้:
+val fxVersion = "21.0.4"
+val fxModules = listOf("base", "graphics", "media")
+val fxPlatforms = listOf("win", "mac", "mac-aarch64", "linux")
 
+sourceSets {
+    val desktopMain by getting {
+        dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.jaudiotagger)
+            fxModules.forEach { m ->
+                fxPlatforms.forEach { p ->
+                    implementation("org.openjfx:javafx-$m:$fxVersion:$p")
+                }
+            }
+        }
+    }
+}
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 kotlin {
@@ -42,13 +60,6 @@ kotlin {
         }
     }
 }
-
-javafx {
-    version = libs.versions.javafx.get()
-    modules = listOf("javafx.base", "javafx.graphics", "javafx.media")
-    configuration = "desktopMainImplementation"
-}
-
 android {
     // ... ส่วนเดิม ...
     sourceSets["main"].apply {
