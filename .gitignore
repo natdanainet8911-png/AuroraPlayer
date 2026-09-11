@@ -1,0 +1,21 @@
+# Gradle / IDE
+.gradle/
+build/
+.idea/
+*.iml
+local.properties
+.kotlin/
+
+# Android
+*.apk
+*.aab
+*.jks
+*.keystore
+captures/
+
+# Desktop output
+composeApp/build/compose/
+
+# OS
+.DS_Store
+Thumbs.db
