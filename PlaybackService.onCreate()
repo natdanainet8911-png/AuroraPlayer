@@ -1,0 +1,24 @@
+import androidx.media3.common.C
+import androidx.media3.common.util.Util
+
+override fun onCreate() {
+    super.onCreate()
+
+    // สร้าง session id ล่วงหน้าเพื่อให้ Visualizer ผูกกับ track นี้โดยเฉพาะ
+    val sessionId = if (Util.SDK_INT >= 21)
+        C.generateAudioSessionIdV21(this) else C.AUDIO_SESSION_ID_UNSET
+
+    val player = ExoPlayer.Builder(this)
+        .setAudioAttributes(/* ... เหมือนเดิม ... */, true)
+        .setHandleAudioBecomingNoisy(true)
+        .setWakeMode(C.WAKE_MODE_LOCAL)
+        .build()
+        .apply {
+            if (sessionId != C.AUDIO_SESSION_ID_UNSET) {
+                audioSessionId = sessionId
+                AudioSessionHolder.publish(sessionId)   // ← เผยแพร่ให้ UI
+            }
+        }
+
+    // ... ส่วนสร้าง MediaSession เหมือนเดิม ...
+}
