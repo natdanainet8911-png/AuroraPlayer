@@ -6,10 +6,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.aurora.player.core.Track
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import com.aurora.player.core.LibraryUiState
+import kotlinx.coroutines.*
 import java.io.File
 
 fun main() = application {
@@ -18,20 +16,41 @@ fun main() = application {
 
     val library = remember {
         FileSystemLibrary(
-            listOf(
-                File(System.getProperty("user.home"), "Music"),
-                File(System.getProperty("user.home"), "Downloads"),
+            listOfNotNull(
+                File(System.getProperty("user.home"), "Music").takeIf { it.exists() },
+                File(System.getProperty("user.home"), "Downloads").takeIf { it.exists() },
             )
         )
     }
-    var tracks by remember { mutableStateOf<List<Track>>(emptyList()) }
-    LaunchedEffect(Unit) { tracks = library.scan() }
+
+    var libraryState by remember { mutableStateOf<LibraryUiState>(LibraryUiState.Loading) }
+
+    val rescan: () -> Unit = {
+        libraryState = LibraryUiState.Loading
+        scope.launch {
+            libraryState = runCatching { library.scan() }.fold(
+                onSuccess = { if (it.isEmpty()) LibraryUiState.Empty else LibraryUiState.Ready(it) },
+                onFailure = { LibraryUiState.Failed(it.message ?: "สแกนไม่สำเร็จ") }
+            )
+        }
+    }
+
+    LaunchedEffect(Unit) { rescan() }
 
     Window(
-        onCloseRequest = { controller.release(); exitApplication() },
+        onCloseRequest = {
+            controller.release()
+            scope.cancel()
+            exitApplication()
+        },
         title = "Aurora Player",
-        state = rememberWindowState(size = DpSize(440.dp, 860.dp)),
+        state = rememberWindowState(size = DpSize(460.dp, 880.dp)),
     ) {
-        App(controller = controller, tracks = tracks)
+        App(
+            controller = controller,
+            libraryState = libraryState,
+            onRequestPermission = { /* เดสก์ท็อปไม่ต้องขอสิทธิ์ */ },
+            onRescan = rescan
+        )
     }
 }
