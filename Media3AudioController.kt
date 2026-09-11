@@ -225,3 +225,20 @@ fun rememberAudioController(): AudioController {
     }
     return controller
 }
+class Media3AudioController(
+    private val appContext: Context,
+    private val scope: CoroutineScope,
+) : AudioController {
+
+    private val fftSource = FftWaveformSource(appContext)     // ← ส่ง context เข้าไป
+    override val waveform: WaveformSource get() = fftSource
+
+    fun connect() {
+        if (future != null) return
+        // เฝ้าติดตาม session id ที่ Service เผยแพร่
+        scope.launch {
+            AudioSessionHolder.sessionId.collect { id -> if (id > 0) fftSource.attach(id) }
+        }
+        // ... ส่วนสร้าง MediaController เหมือนเดิม (ลบบรรทัด fftSource.attach(c) เดิมออก) ...
+    }
+}
