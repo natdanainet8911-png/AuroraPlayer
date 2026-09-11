@@ -20,7 +20,7 @@
 
 ## การ Build
 ```bash
-git clone https://github.com/<user>/AuroraPlayer.git
+git clone https://github.com/natdanainet8911-png/AuroraPlayer.git
 cd AuroraPlayer
 
 ./gradlew :composeApp:assembleRelease      # APK
