@@ -50,9 +50,13 @@ javafx {
 }
 
 android {
-    namespace = "com.aurora.player"
-    compileSdk = libs.versions.androidCompileSdk.get().toInt()
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    // ... ส่วนเดิม ...
+    sourceSets["main"].apply {
+        manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        res.srcDirs("src/androidMain/res")          // ← เพิ่มบรรทัดนี้
+        resources.srcDirs("src/commonMain/resources")
+    }
+}
 
     defaultConfig {
         applicationId = "com.aurora.player"
