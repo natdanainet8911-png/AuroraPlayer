@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Theme นี้ทำหน้าที่เพียง "สะพาน" ก่อนที่ Compose จะเข้าควบคุม
+      จุดสำคัญคือ windowBackground ต้องเป็นสีเดียวกับ backdrop
+      เพื่อขจัดอาการ white-flash ระหว่าง cold start
+    -->
+    <style name="Theme.Aurora" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/aurora_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
+</resources>
