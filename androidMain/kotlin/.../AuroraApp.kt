@@ -21,9 +21,11 @@ import okio.Path.Companion.toOkioPath
 class AuroraApp : Application(), SingletonImageLoader.Factory {
 
     override fun onCreate() {
-        super.onCreate()
-        if (BuildConfigCompat.DEBUG) enableStrictMode()
-    }
+    super.onCreate()
+    com.aurora.player.core.AndroidPlatform.appContext = applicationContext   // ← เพิ่ม
+    if (BuildConfigCompat.DEBUG) enableStrictMode()
+}
+
 
     override fun newImageLoader(context: PlatformContext): ImageLoader =
         ImageLoader.Builder(context)
