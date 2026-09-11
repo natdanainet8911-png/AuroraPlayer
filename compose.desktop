@@ -1,0 +1,13 @@
+compose.desktop {
+    application {
+        mainClass = "com.aurora.player.MainKt"
+        jvmArgs += listOf(
+            "-Dfile.encoding=UTF-8",
+            "-Djavafx.platform=desktop",
+            "-Dprism.order=sw",            // เลี่ยง conflict กับ Skia ของ Compose
+            "-Dglass.platform=Monocle",    // ทำงานแบบ headless ไม่เปิดหน้าต่าง JavaFX
+            "-Dmonocle.platform=Headless",
+        )
+        // ... nativeDistributions เหมือนเดิม ...
+    }
+}
