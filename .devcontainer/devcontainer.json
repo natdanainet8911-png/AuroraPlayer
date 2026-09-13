@@ -1,0 +1,40 @@
+{
+  "name": "AuroraPlayer KMP",
+  "image": "mcr.microsoft.com/devcontainers/java:17-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none",
+      "installGradle": true,
+      "gradleVersion": "8.14"
+    }
+  },
+
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb",
+    "storage": "32gb"
+  },
+
+  "containerEnv": {
+    "ANDROID_HOME": "/usr/local/android-sdk",
+    "ANDROID_SDK_ROOT": "/usr/local/android-sdk",
+    "GRADLE_OPTS": "-Dorg.gradle.jvmargs=-Xmx6g -Dfile.encoding=UTF-8"
+  },
+
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/usr/local/android-sdk/cmdline-tools/latest/bin:/usr/local/android-sdk/platform-tools"
+  },
+
+  "onCreateCommand": "bash .devcontainer/setup-android.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "fwcd.kotlin",
+        "vscjava.vscode-gradle",
+        "redhat.vscode-xml"
+      ]
+    }
+  }
+}
